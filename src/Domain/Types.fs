@@ -6,7 +6,7 @@ module Domain.Types
 
 type Pokemon = {
     Name: string
-    Desctiption: string
+    Description: string
     Habitat: string
     IsLegendary: bool
 }
