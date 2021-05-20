@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31306.274
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttrapezLesTousApp", "AttrapezLesTousApp\AttrapezLesTousApp.csproj", "{F0FA1485-C519-4BEC-AE3D-8B606F1D0A94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AttrapezLesTousApp", "src\AttrapezLesTousApp\AttrapezLesTousApp.csproj", "{F0FA1485-C519-4BEC-AE3D-8B606F1D0A94}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C435EDAC-B439-4D36-B90C-90AE2BC5D607}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +20,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F0FA1485-C519-4BEC-AE3D-8B606F1D0A94} = {C435EDAC-B439-4D36-B90C-90AE2BC5D607}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {501B7B31-92B2-40A9-9A0F-3A9CFE173DF8}
