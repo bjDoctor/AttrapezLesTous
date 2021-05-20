@@ -16,15 +16,16 @@ let fetchPokemonId name =
         let url = baseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
         
-        return rawPokemon.Id
+        return rawPokemon.Id |> string
     }
 
 let fecthPokemon name =
     async{
-        let pokemonId = fetchPokemonId name
+        let! pokemonId = fetchPokemonId name
 
         let url = baseUrl +/ "pokemon-species" +/ pokemonId
         let! pokemonSpecies = JsonProviders.PokemonSpeciesProvider.AsyncLoad(url)
+
         let description = pokemonSpecies.FlavorTextEntries |> Array.find(fun x-> x.Language.Name="en" && x.Version.Name="blue" )
 
         return {
