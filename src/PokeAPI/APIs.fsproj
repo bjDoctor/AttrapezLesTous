@@ -9,7 +9,7 @@
   <ItemGroup>
     <Compile Include="Utilities.fs" />
     <Compile Include="JsonProviders.fs" />
-    <Compile Include="YodaAPI.fs" />
+    <Compile Include="TranslatedAPI.fs" />
     <Compile Include="PokeAPI.fs" />
   </ItemGroup>
 

@@ -13,7 +13,7 @@ open Domain.Types
 
 let private pokeBaseUrl = "https://pokeapi.co/api/v2/"
 
-let private fetchPokemonIdAsync name = 
+let private fetchPokemonId name = 
     async {
         let url = pokeBaseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
@@ -21,9 +21,9 @@ let private fetchPokemonIdAsync name =
         return rawPokemon.Id |> string
     }
 
-let private fecthPokemonAsync logger name =
+let private fecthPokemon logger name =
     async {
-        let! pokemonId = fetchPokemonIdAsync name
+        let! pokemonId = fetchPokemonId name
 
         let url = pokeBaseUrl +/ "pokemon-species" +/ pokemonId
         let! pokemonSpecies = PokemonSpeciesProvider.AsyncLoad(url)
@@ -39,28 +39,28 @@ let private fecthPokemonAsync logger name =
         }
 
 
-let private yodaTranslateDescriptionAsync (pokemon: Pokemon) = 
+let private fetchTranslatedDescription (pokemon: Pokemon) translation = 
     async {
-        let! yodaDescription = yodaTranslateAsync pokemon.Description
+        let! yodaDescription = fetchTranslation pokemon.Description translation
         return {pokemon with Description = yodaDescription}
     }
 
-let private fetchTranslatedPokemonAsync (logger: ILogger) name = 
+let private fetchTranslatedPokemon (logger: ILogger) name = 
     async {
-        let! pokemon = fecthPokemonAsync logger name
+        let! pokemon = fecthPokemon logger name
 
         try
             return!
                 match (pokemon.Habitat, pokemon.IsLegendary) with
-                    | ("cave", _) | (_, true) -> yodaTranslateDescriptionAsync pokemon
-                    | _ -> yodaTranslateDescriptionAsync pokemon
+                    | ("cave", _) | (_, true) -> fetchTranslatedDescription pokemon Yoda
+                    | _ -> fetchTranslatedDescription pokemon Shakespeare
         with 
-            | ex -> logger.LogInformation($"Failed to translate description, returning non-translated description: {ex.Message}. ."); return pokemon //catch any exception: return default pokemon
+            | ex -> logger.LogInformation($"Failed to translate description, returning non-translated description: {ex.Message}. ."); return pokemon //catch any exception
     }
 
 
 let GetPokemonAsync logger name = 
-    startAsyncFunctionAsTask fecthPokemonAsync logger name
+    startAsyncFunctionAsTask fecthPokemon logger name
 
 let GetTranslatedPokemonAsync logger name = 
-    startAsyncFunctionAsTask fetchTranslatedPokemonAsync logger name
+    startAsyncFunctionAsTask fetchTranslatedPokemon logger name
