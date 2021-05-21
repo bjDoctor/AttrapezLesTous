@@ -25,7 +25,7 @@ namespace AttrapezLesTousApp.Controllers
 
             try
             {
-                return await APIs.PokeAPI.GetPokemonAsync(name);
+                return await APIs.PokeAPI.GetPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {
@@ -41,7 +41,7 @@ namespace AttrapezLesTousApp.Controllers
 
             try
             {
-                return await APIs.PokeAPI.GetTranslatedPokemonAsync(name);
+                return await APIs.PokeAPI.GetTranslatedPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {

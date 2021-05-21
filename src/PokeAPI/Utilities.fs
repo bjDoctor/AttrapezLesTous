@@ -36,8 +36,8 @@ let filterOutEscapeCharacters input =
 
 
 /// Callable from C#: converts an F# async into a C# task
-let startAsyncFunctionAsTask f x =
+let startAsyncFunctionAsTask f x y =
     async {
-        return! f x
+        return! f x y
     }
     |> Async.StartAsTask

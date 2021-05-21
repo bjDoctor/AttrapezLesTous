@@ -5,6 +5,7 @@
 module APIs.PokeAPI
 
 open System
+open Microsoft.Extensions.Logging
 open APIs.Utilities
 open APIs.YodaAPI
 open APIs.JsonProviders
@@ -20,7 +21,7 @@ let private fetchPokemonIdAsync name =
         return rawPokemon.Id |> string
     }
 
-let private fecthPokemonAsync name =
+let private fecthPokemonAsync logger name =
     async {
         let! pokemonId = fetchPokemonIdAsync name
 
@@ -38,15 +39,15 @@ let private fecthPokemonAsync name =
         }
 
 
-let yodaTranslateDescriptionAsync (pokemon: Pokemon) = 
+let private yodaTranslateDescriptionAsync (pokemon: Pokemon) = 
     async {
         let! yodaDescription = yodaTranslateAsync pokemon.Description
         return {pokemon with Description = yodaDescription}
     }
 
-let private fetchTranslatedPokemonAsync name = 
+let private fetchTranslatedPokemonAsync (logger: ILogger) name = 
     async {
-        let! pokemon = fecthPokemonAsync name
+        let! pokemon = fecthPokemonAsync logger name
 
         try
             return!
@@ -54,12 +55,12 @@ let private fetchTranslatedPokemonAsync name =
                     | ("cave", _) | (_, true) -> yodaTranslateDescriptionAsync pokemon
                     | _ -> yodaTranslateDescriptionAsync pokemon
         with 
-            | :? Exception as ex -> return pokemon //catch any exception: return default pokemon
+            | ex -> logger.LogInformation($"Failed to translate description, returning non-translated description: {ex.Message}. ."); return pokemon //catch any exception: return default pokemon
     }
 
 
-let GetPokemonAsync name = 
-    startAsyncFunctionAsTask fecthPokemonAsync name
+let GetPokemonAsync logger name = 
+    startAsyncFunctionAsTask fecthPokemonAsync logger name
 
-let GetTranslatedPokemonAsync name = 
-    startAsyncFunctionAsTask fetchTranslatedPokemonAsync name
+let GetTranslatedPokemonAsync logger name = 
+    startAsyncFunctionAsTask fetchTranslatedPokemonAsync logger name
