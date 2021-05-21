@@ -5,6 +5,31 @@
 module APIs.Utilities
 
 open System
+open System.Collections.Generic
+open Domain.Types
+
+/////
+
+//TODO: move to separate module 
+
+// Initialise cache
+let pokemonDetailsCache = new Dictionary<string, PokemonDetails>()
+
+let getFromCacheOrFetch (cache: Dictionary<'a, 'b>) fetch key = 
+    let fetchAndUpdateCache() = 
+        async {
+            let! value = fetch key
+            cache.TryAdd(key, value) |> ignore
+            return value
+        }
+
+    async {
+        match cache.TryGetValue(key) with
+            | true, cachedDetails -> return cachedDetails 
+            | _ -> return! fetchAndUpdateCache()
+    }
+
+/////
 
 
 /// Custom path concatenation operator

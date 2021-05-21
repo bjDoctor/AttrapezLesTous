@@ -13,8 +13,9 @@ open Domain.Types
 
 let private pokeBaseUrl = "https://pokeapi.co/api/v2/"
 
+
 let private fetchPokemonDetails name = 
-    async {
+    let fetch name = async {
         let url = pokeBaseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
         
@@ -23,6 +24,8 @@ let private fetchPokemonDetails name =
             Name = rawPokemon.Name
         }
     }
+
+    getFromCacheOrFetch pokemonDetailsCache fetch name 
 
 let private makePokemon (logger: ILogger) (pokemonSpecies: PokemonSpeciesProvider.Root) name  =
     try
@@ -60,15 +63,18 @@ let private fetchTranslatedDescription (pokemon: Pokemon) translation =
         return {pokemon with Description = yodaDescription}
     }
 
+
 /// Helper function allowing logging
 let private fetchYodaTranslatedDescription  (logger: ILogger) pokemon = 
     logger.LogInformation($"Translating {pokemon.Name}'s description using master Yoda's dialect")
     fetchTranslatedDescription pokemon Yoda
 
+
 /// Helper function allowing logging
 let private fetchShakespeareTranslatedDescription  (logger: ILogger) pokemon = 
     logger.LogInformation($"Translating {pokemon.Name}'s description using Shakespearean English")
     fetchTranslatedDescription pokemon Shakespeare
+
 
 let private fetchTranslatedPokemon (logger: ILogger) name = 
     async {
