@@ -27,4 +27,9 @@ let (+/) (lhs: string) (rhs: string) =
 /// Replcace escape characters by a space
 let filterOutEscapeCharacters input =
     let pattern = @"[\n\f]"
-    System.Text.RegularExpressions.Regex.Replace(input, pattern, " ")
+    
+    try
+        System.Text.RegularExpressions.Regex.Replace(input, pattern, " ")
+    with 
+        :? System.Exception -> 
+        if isNull input then String.Empty else input

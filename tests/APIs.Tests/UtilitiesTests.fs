@@ -6,6 +6,7 @@ open FsUnit.Xunit
 open FsCheck.Xunit
 
 open APIs.Utilities
+open FsCheck
 
 module pathConcatanationOperator = 
     [<Fact>]
@@ -24,12 +25,34 @@ module pathConcatanationOperator =
         "lhs/" +/ "\\rhs" |> should equal expected
 
 module filterOutEscapeCharacters = 
+    /// Property-based test using FsCheck: https://fscheck.github.io/FsCheck/
+    /// The framework generates 100 "random" inputs, to validate if the property holds
+    [<Property>]
+    let ``Returns input if it has no escape characters`` (input: NonEmptyString) =
+        let inputString = input.Get
+
+        /// The property is evaluated only if \n and \f are NOT present in the input
+        not (inputString.Contains('\n') || inputString.Contains('\f')) 
+        ==> (filterOutEscapeCharacters inputString = inputString)
+
     [<Fact>]
-    let ``Replace \n by a space`` () =
+       let ``Returns input if empty`` () =
+           filterOutEscapeCharacters String.Empty |> should equal String.Empty
+
+    [<Fact>]
+    let ``Returrns emptry string if null`` () =
+        filterOutEscapeCharacters null |> should equal String.Empty
+
+    [<Fact>]
+    let ``Replaces \n by a space`` () =
         filterOutEscapeCharacters "some\nstring\nwith\nline\nbreak" |> should equal "some string with line break"
 
     [<Fact>]
-    let ``Replace \f by a space`` () =
+    let ``Replaces \f by a space`` () =
         filterOutEscapeCharacters "some\fstring\fwith\ffeed" |> should equal "some string with feed"
+
+
+
+    
 
 
