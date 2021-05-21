@@ -11,7 +11,7 @@ open Domain.Types
 
 let private baseUrl = "https://pokeapi.co/api/v2/"
 
-let fetchPokemonId name = 
+let private fetchPokemonIdAsync name = 
     async {
         let url = baseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
@@ -19,9 +19,9 @@ let fetchPokemonId name =
         return rawPokemon.Id |> string
     }
 
-let fecthPokemon name =
+let private fecthPokemonAsync name =
     async{
-        let! pokemonId = fetchPokemonId name
+        let! pokemonId = fetchPokemonIdAsync name
 
         let url = baseUrl +/ "pokemon-species" +/ pokemonId
         let! pokemonSpecies = JsonProviders.PokemonSpeciesProvider.AsyncLoad(url)
@@ -35,3 +35,13 @@ let fecthPokemon name =
             IsLegendary = pokemonSpecies.IsLegendary
             }
         }
+
+/// Callable from C#
+let private startAsyncFunctionAsTask f x =
+    async {
+        return! f x
+    }
+    |> Async.StartAsTask
+
+let GetPokemonAsync name = 
+    startAsyncFunctionAsTask fecthPokemonAsync name
