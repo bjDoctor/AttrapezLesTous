@@ -20,7 +20,7 @@ let private fetchPokemonIdAsync name =
     }
 
 let private fecthPokemonAsync name =
-    async{
+    async {
         let! pokemonId = fetchPokemonIdAsync name
 
         let url = baseUrl +/ "pokemon-species" +/ pokemonId
@@ -29,10 +29,10 @@ let private fecthPokemonAsync name =
         let description = pokemonSpecies.FlavorTextEntries |> Array.find(fun x-> x.Language.Name="en" && x.Version.Name="blue" )
 
         return {
-            Name = name; 
-            Description = filterOutEscapeCharacters description.FlavorText; 
-            Habitat = pokemonSpecies.Habitat.Name; 
-            IsLegendary = pokemonSpecies.IsLegendary
+                Name = name; 
+                Description = filterOutEscapeCharacters description.FlavorText; 
+                Habitat = pokemonSpecies.Habitat.Name; 
+                IsLegendary = pokemonSpecies.IsLegendary
             }
         }
 

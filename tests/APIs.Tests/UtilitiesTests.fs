@@ -36,8 +36,8 @@ module filterOutEscapeCharacters =
         ==> (filterOutEscapeCharacters inputString = inputString)
 
     [<Fact>]
-       let ``Returns input if empty`` () =
-           filterOutEscapeCharacters String.Empty |> should equal String.Empty
+    let ``Returns input if empty`` () =
+        filterOutEscapeCharacters String.Empty |> should equal String.Empty
 
     [<Fact>]
     let ``Returrns emptry string if null`` () =
