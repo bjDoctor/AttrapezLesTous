@@ -23,7 +23,15 @@ namespace AttrapezLesTousApp.Controllers
         {
             _logger.LogInformation($"Retrieving detail for {name}");
 
-            return await APIs.PokeAPI.GetPokemonAsync(name);
+            try
+            {
+                return await APIs.PokeAPI.GetPokemonAsync(name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Failed to retrieve detail for {name}: {ex.Message}");
+                throw;
+            }
         }
     }
 }

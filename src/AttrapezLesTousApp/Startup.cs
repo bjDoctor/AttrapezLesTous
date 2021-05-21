@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,16 @@ namespace AttrapezLesTousApp
             }
 
             app.UseHttpsRedirection();
+
+            //Custom middleware exception handler
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = exceptionHandlerPathFeature.Error;
+                var message = "Why don't you ask Professor Oak if this Pokemon really exists?!?";
+
+                await context.Response.WriteAsJsonAsync(new { error = exception.Message, message = message });
+            }));
 
             app.UseRouting();
 
