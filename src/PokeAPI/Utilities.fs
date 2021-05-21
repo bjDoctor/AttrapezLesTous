@@ -8,19 +8,20 @@ open System
 
 
 /// Custom path concatenation operator
-let (+/) (lhs: string) (rhs: string) = 
+let (+/) (lhs: string) rhs = 
+    let rhsString = rhs |> string
     let slashes = ['/'; '\\']
 
     let lastLhsChar = lhs |> Seq.last
-    let firstRhsChar = rhs |> Seq.head
+    let firstRhsChar = rhsString |> Seq.head
 
     let trimmedLhs = if slashes |> List.contains lastLhsChar 
                         then lhs.[..(lhs.Length - 2)]
                         else lhs
 
     let trimmedRhs = if slashes |> List.contains firstRhsChar 
-                        then rhs.[1..]
-                        else rhs
+                        then rhsString.[1..]
+                        else rhsString
 
     trimmedLhs + "/" + trimmedRhs 
 

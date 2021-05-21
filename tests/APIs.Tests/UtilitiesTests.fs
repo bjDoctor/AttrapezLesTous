@@ -24,6 +24,10 @@ module pathConcatanationOperator =
         "lhs" +/ "\\rhs" |> should equal expected
         "lhs/" +/ "\\rhs" |> should equal expected
 
+    [<Fact>]
+    let ``Handles ints as rhs`` () =
+        "lhs" +/ 123 |> should equal "lhs/123"
+
 module filterOutEscapeCharacters = 
     /// Property-based test using FsCheck: https://fscheck.github.io/FsCheck/
     /// The framework generates 100 "random" inputs, to validate if the property holds

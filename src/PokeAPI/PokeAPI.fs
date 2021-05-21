@@ -4,39 +4,54 @@
 
 module APIs.PokeAPI
 
-open System
 open Microsoft.Extensions.Logging
 open APIs.Utilities
 open APIs.YodaAPI
 open APIs.JsonProviders
 open Domain.Types
 
+
 let private pokeBaseUrl = "https://pokeapi.co/api/v2/"
 
-let private fetchPokemonId name = 
+let private fetchPokemonDetails name = 
     async {
         let url = pokeBaseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
         
-        return rawPokemon.Id |> string
+        return {
+            Id = rawPokemon.Id; 
+            Name = rawPokemon.Name
+        }
     }
+
+let private makePokemon (logger: ILogger) (pokemonSpecies: PokemonSpeciesProvider.Root) name  =
+    try
+        let englishDescription = 
+            pokemonSpecies.FlavorTextEntries 
+            |> Array.find(fun x-> x.Language.Name="en")
+
+        {
+            Name = name; 
+            Description = filterOutEscapeCharacters englishDescription.FlavorText; 
+            Habitat = pokemonSpecies.Habitat.Name; 
+            IsLegendary = pokemonSpecies.IsLegendary
+        }
+    with
+        | ex -> 
+            logger.LogInformation($"Failed make a Pokemon object: {ex.Message}")
+            reraise()
+
+    
 
 let private fecthPokemon logger name =
     async {
-        let! pokemonId = fetchPokemonId name
+        let! pokemonDetails = fetchPokemonDetails name
 
-        let url = pokeBaseUrl +/ "pokemon-species" +/ pokemonId
+        let url = pokeBaseUrl +/ "pokemon-species" +/ pokemonDetails.Id
         let! pokemonSpecies = PokemonSpeciesProvider.AsyncLoad(url)
 
-        let description = pokemonSpecies.FlavorTextEntries |> Array.find(fun x-> x.Language.Name="en" && x.Version.Name="blue" )
-
-        return {
-                Name = name; 
-                Description = filterOutEscapeCharacters description.FlavorText; 
-                Habitat = pokemonSpecies.Habitat.Name; 
-                IsLegendary = pokemonSpecies.IsLegendary
-            }
-        }
+        return makePokemon logger pokemonSpecies pokemonDetails.Name 
+    }
 
 
 let private fetchTranslatedDescription (pokemon: Pokemon) translation = 
@@ -45,17 +60,27 @@ let private fetchTranslatedDescription (pokemon: Pokemon) translation =
         return {pokemon with Description = yodaDescription}
     }
 
+/// Helper function allowing logging
+let private fetchYodaTranslatedDescription  (logger: ILogger) pokemon = 
+    logger.LogInformation($"Translating {pokemon.Name}'s description using master Yoda's dialect")
+    fetchTranslatedDescription pokemon Yoda
+
+/// Helper function allowing logging
+let private fetchShakespeareTranslatedDescription  (logger: ILogger) pokemon = 
+    logger.LogInformation($"Translating {pokemon.Name}'s description using Shakespearean English")
+    fetchTranslatedDescription pokemon Shakespeare
+
 let private fetchTranslatedPokemon (logger: ILogger) name = 
     async {
-        let! pokemon = fecthPokemon logger name
+        let! pokemon = fecthPokemon logger name 
 
         try
             return!
                 match (pokemon.Habitat, pokemon.IsLegendary) with
-                    | ("cave", _) | (_, true) -> fetchTranslatedDescription pokemon Yoda
-                    | _ -> fetchTranslatedDescription pokemon Shakespeare
+                    | ("cave", _) | (_, true) -> fetchYodaTranslatedDescription logger pokemon
+                    | _ -> fetchShakespeareTranslatedDescription logger pokemon
         with 
-            | ex -> logger.LogInformation($"Failed to translate description, returning non-translated description: {ex.Message}. ."); return pokemon //catch any exception
+            | ex -> logger.LogInformation($"Failed to translate description, returning non-translated description: {ex.Message}"); return pokemon //catch any exception
     }
 
 
