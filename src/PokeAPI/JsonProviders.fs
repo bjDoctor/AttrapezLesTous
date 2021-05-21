@@ -1,4 +1,8 @@
-﻿module APIs.JsonProviders
+﻿//////
+/// This module contains the data providers used to issue rest requests throughout this project
+//////
+
+module APIs.JsonProviders
 
 open FSharp.Data
 
@@ -1336,6 +1340,22 @@ let private pokemonSample = """
 "weight": 1220
 }"""
 
+[<Literal>]
+// copy pasted from https://api.funtranslations.com/translate/yoda.json?text=Master%20Obiwan%20has%20lost%20a%20planet.
+let private yodaSample = """
+{
+"success": {
+"total": 1
+},
+"contents": {
+"translated": "Lost a planet,  master obiwan has.",
+"text": "Master Obiwan has lost a planet.",
+"translation": "yoda"
+}
+}"""
+
 type PokemonSpeciesProvider = JsonProvider<pokemonSpeciesSample>
 
 type PokemonProvider = JsonProvider<pokemonSample>
+
+type YodaProvider = JsonProvider<yodaSample>

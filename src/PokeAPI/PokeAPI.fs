@@ -6,6 +6,7 @@ module APIs.PokeAPI
 
 open System
 open APIs.Utilities
+open APIs.YodaAPI
 open APIs.JsonProviders
 open Domain.Types
 
@@ -36,17 +37,24 @@ let private fecthPokemonAsync name =
             }
         }
 
+
+let yodaTranslateDescriptionAsync (pokemon: Pokemon) = 
+    async {
+        let! yodaDescription = yodaTranslateAsync pokemon.Description
+        return {pokemon with Description = yodaDescription}
+    }
+
 let private fetchTranslatedPokemonAsync name = 
     async {
         let! pokemon = fecthPokemonAsync name
 
         try
-            return 
+            return!
                 match (pokemon.Habitat, pokemon.IsLegendary) with
-                    | ("cave", _) | (_, true) -> pokemon
-                    | _ -> pokemon
+                    | ("cave", _) | (_, true) -> yodaTranslateDescriptionAsync pokemon
+                    | _ -> yodaTranslateDescriptionAsync pokemon
         with 
-            | _ -> return pokemon //catch any exception: return default pokemon
+            | :? Exception as ex -> return pokemon //catch any exception: return default pokemon
     }
 
 
