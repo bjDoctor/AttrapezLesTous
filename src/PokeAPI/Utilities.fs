@@ -23,3 +23,8 @@ let (+/) (lhs: string) (rhs: string) =
 
     trimmedLhs + "/" + trimmedRhs 
 
+
+/// Replcace escape characters by a space
+let filterOutEscapeCharacters input =
+    let pattern = @"[\n\f]"
+    System.Text.RegularExpressions.Regex.Replace(input, pattern, " ")

@@ -30,7 +30,7 @@ let private fecthPokemonAsync name =
 
         return {
             Name = name; 
-            Description = description.FlavorText; 
+            Description = filterOutEscapeCharacters description.FlavorText; 
             Habitat = pokemonSpecies.Habitat.Name; 
             IsLegendary = pokemonSpecies.IsLegendary
             }

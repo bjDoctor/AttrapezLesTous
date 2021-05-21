@@ -1,4 +1,4 @@
-module UtilitiesTests
+namespace UtilitiesTests
 
 open System
 open Xunit
@@ -22,4 +22,14 @@ module pathConcatanationOperator =
         "lhs\\" +/ "\\rhs" |> should equal expected
         "lhs" +/ "\\rhs" |> should equal expected
         "lhs/" +/ "\\rhs" |> should equal expected
+
+module filterOutEscapeCharacters = 
+    [<Fact>]
+    let ``Replace \n by a space`` () =
+        filterOutEscapeCharacters "some\nstring\nwith\nline\nbreak" |> should equal "some string with line break"
+
+    [<Fact>]
+    let ``Replace \f by a space`` () =
+        filterOutEscapeCharacters "some\fstring\fwith\ffeed" |> should equal "some string with feed"
+
 
