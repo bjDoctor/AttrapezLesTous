@@ -6,6 +6,7 @@ module APIs.Utilities
 
 open System
 
+
 /// Custom path concatenation operator
 let (+/) (lhs: string) (rhs: string) = 
     let slashes = ['/'; '\\']
@@ -31,5 +32,12 @@ let filterOutEscapeCharacters input =
     try
         System.Text.RegularExpressions.Regex.Replace(input, pattern, " ")
     with 
-        :? System.Exception -> 
-        if isNull input then String.Empty else input
+        | _ ->  if isNull input then String.Empty else input //catch any exception
+
+
+/// Callable from C#: converts an F# async into a C# task
+let startAsyncFunctionAsTask f x =
+    async {
+        return! f x
+    }
+    |> Async.StartAsTask

@@ -21,7 +21,7 @@ namespace AttrapezLesTousApp.Controllers
         [HttpGet("{name}")]
         public async Task<Domain.Types.Pokemon> GetAsync(string name)
         {
-            _logger.LogInformation($"Retrieving detail for {name}");
+            _logger.LogInformation($"Retrieving details for {name}");
 
             try
             {
@@ -29,7 +29,23 @@ namespace AttrapezLesTousApp.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Failed to retrieve detail for {name}: {ex.Message}");
+                _logger.LogInformation($"Failed to retrieve details for {name}: {ex.Message}");
+                throw;
+            }
+        }
+
+        [HttpGet("translated/{name}")]
+        public async Task<Domain.Types.Pokemon> GetTranslatedAsync(string name)
+        {
+            _logger.LogInformation($"Retrieving translated detail for {name}");
+
+            try
+            {
+                return await APIs.PokeAPI.GetTranslatedPokemonAsync(name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Failed to retrieve translated details for {name}: {ex.Message}");
                 throw;
             }
         }

@@ -9,11 +9,11 @@ open APIs.Utilities
 open APIs.JsonProviders
 open Domain.Types
 
-let private baseUrl = "https://pokeapi.co/api/v2/"
+let private pokeBaseUrl = "https://pokeapi.co/api/v2/"
 
 let private fetchPokemonIdAsync name = 
     async {
-        let url = baseUrl +/ "pokemon" +/ name
+        let url = pokeBaseUrl +/ "pokemon" +/ name
         let! rawPokemon = PokemonProvider.AsyncLoad(url)
         
         return rawPokemon.Id |> string
@@ -23,8 +23,8 @@ let private fecthPokemonAsync name =
     async {
         let! pokemonId = fetchPokemonIdAsync name
 
-        let url = baseUrl +/ "pokemon-species" +/ pokemonId
-        let! pokemonSpecies = JsonProviders.PokemonSpeciesProvider.AsyncLoad(url)
+        let url = pokeBaseUrl +/ "pokemon-species" +/ pokemonId
+        let! pokemonSpecies = PokemonSpeciesProvider.AsyncLoad(url)
 
         let description = pokemonSpecies.FlavorTextEntries |> Array.find(fun x-> x.Language.Name="en" && x.Version.Name="blue" )
 
@@ -36,12 +36,22 @@ let private fecthPokemonAsync name =
             }
         }
 
-/// Callable from C#
-let private startAsyncFunctionAsTask f x =
+let private fetchTranslatedPokemonAsync name = 
     async {
-        return! f x
+        let! pokemon = fecthPokemonAsync name
+
+        try
+            return 
+                match (pokemon.Habitat, pokemon.IsLegendary) with
+                    | ("cave", _) | (_, true) -> pokemon
+                    | _ -> pokemon
+        with 
+            | _ -> return pokemon //catch any exception: return default pokemon
     }
-    |> Async.StartAsTask
+
 
 let GetPokemonAsync name = 
     startAsyncFunctionAsTask fecthPokemonAsync name
+
+let GetTranslatedPokemonAsync name = 
+    startAsyncFunctionAsTask fetchTranslatedPokemonAsync name
