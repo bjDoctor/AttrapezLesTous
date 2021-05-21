@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PokeAPI\APIs.fsproj" />
+    <ProjectReference Include="..\PokeAPI\Core.fsproj" />
   </ItemGroup>
 
 

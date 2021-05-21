@@ -19,13 +19,13 @@ namespace AttrapezLesTousApp.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<Domain.Types.Pokemon> GetAsync(string name)
+        public async Task<Core.Domain.Pokemon> GetAsync(string name)
         {
             _logger.LogInformation($"Retrieving details for {name}");
 
             try
             {
-                return await APIs.PokeAPI.GetPokemonAsync(_logger, name);
+                return await Core.PokeAPI.GetPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {
@@ -35,13 +35,13 @@ namespace AttrapezLesTousApp.Controllers
         }
 
         [HttpGet("translated/{name}")]
-        public async Task<Domain.Types.Pokemon> GetTranslatedAsync(string name)
+        public async Task<Core.Domain.Pokemon> GetTranslatedAsync(string name)
         {
             _logger.LogInformation($"Retrieving translated detail for {name}");
 
             try
             {
-                return await APIs.PokeAPI.GetTranslatedPokemonAsync(_logger, name);
+                return await Core.PokeAPI.GetTranslatedPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {

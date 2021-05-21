@@ -2,7 +2,7 @@
 /// This module contains the data providers used to issue rest requests throughout this project
 //////
 
-module APIs.JsonProviders
+module Core.JsonProviders
 
 open FSharp.Data
 

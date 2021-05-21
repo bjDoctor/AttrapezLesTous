@@ -2,9 +2,9 @@
 /// Module handling calls to the Translation API to get sentences tranlated like a master Jedi or the Bard of Avon
 //////
 
-module APIs.YodaAPI
+module Core.YodaAPI
 
-open APIs.JsonProviders
+open Core.JsonProviders
 
 // Discriminated union to distinguish the traduction types
 type Translation = 

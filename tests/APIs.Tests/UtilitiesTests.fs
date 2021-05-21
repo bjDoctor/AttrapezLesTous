@@ -5,7 +5,7 @@ open Xunit
 open FsUnit.Xunit
 open FsCheck.Xunit
 
-open APIs.Utilities
+open Core.Utilities
 open FsCheck
 
 module pathConcatanationOperator = 

@@ -2,13 +2,13 @@
 /// Module implementing retrieval of Pokemon detials through a series of REST API calls to the pokeapi and filtering of the returned data
 //////
 
-module APIs.PokeAPI
+module Core.PokeAPI
 
 open Microsoft.Extensions.Logging
-open APIs.Utilities
-open APIs.YodaAPI
-open APIs.JsonProviders
-open Domain.Types
+open Core.Utilities
+open Core.YodaAPI
+open Core.JsonProviders
+open Core.Domain
 
 
 let private pokeBaseUrl = "https://pokeapi.co/api/v2/"

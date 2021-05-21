@@ -2,11 +2,11 @@
 /// Helper functions used in the APIs module
 //////
 
-module APIs.Utilities
+module Core.Utilities
 
 open System
 open System.Collections.Generic
-open Domain.Types
+open Core.Domain
 
 /////
 
