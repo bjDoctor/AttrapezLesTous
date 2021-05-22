@@ -5,17 +5,20 @@
 module Core.Utilities
 
 open System
-open System.Collections.Generic
 open Core.Domain
+open System.Collections.Concurrent
 
 /////
 
 //TODO: move to separate module 
 
-// Initialise cache
-let pokemonDetailsCache = new Dictionary<string, PokemonDetails>()
 
-let getFromCacheOrFetch (cache: Dictionary<'a, 'b>) fetch key = 
+
+/// Retrieve a value identified by key from a cache, if it exists,
+/// or obtains data from an async fetch method and store its result
+///     Note: this implememntation is NOT thread safe!!!
+///     (when calling TryGetValue, the cache is not locked, see: http://www.fssnip.net/7Qr/2)
+let getFromCacheOrFetch (cache: ConcurrentDictionary<'a, 'b>) fetch key = 
     let fetchAndUpdateCache() = 
         async {
             let! value = fetch key
@@ -62,8 +65,8 @@ let filterOutEscapeCharacters input =
 
 
 /// Callable from C#: converts an F# async into a C# task
-let startAsyncFunctionAsTask f x y =
+let startAsyncFunctionAsTask f =
     async {
-        return! f x y
+        return! f()
     }
     |> Async.StartAsTask
