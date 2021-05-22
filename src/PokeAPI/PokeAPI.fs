@@ -9,35 +9,28 @@ open Core.Utilities
 open Core.YodaAPI
 open Core.JsonProviders
 open Core.Domain
+open System.Collections.Concurrent
 
 
-let private pokeBaseUrl = "https://pokeapi.co/api/v2/"
+
+let private _baseUrl = "https://pokeapi.co/api/v2/"
+let private _pokemonSpeciesEndpoint = _baseUrl +/ "pokemon-species"
+
+// Initialise cache
+let private _pokemonCache = ConcurrentDictionary<string, Pokemon>()
 
 
-let private fetchPokemonDetails name = 
-    let fetch name = async {
-        let url = pokeBaseUrl +/ "pokemon" +/ name
-        let! rawPokemon = PokemonProvider.AsyncLoad(url)
-        
-        return {
-            Id = rawPokemon.Id; 
-            Name = rawPokemon.Name
-        }
-    }
-
-    getFromCacheOrFetch pokemonDetailsCache fetch name 
-
-let private makePokemon (logger: ILogger) (pokemonSpecies: PokemonSpeciesProvider.Root) name  =
+let private makePokemon (logger: ILogger) (rawPokemonSpecies: PokemonSpeciesProvider.Root)  =
     try
         let englishDescription = 
-            pokemonSpecies.FlavorTextEntries 
+            rawPokemonSpecies.FlavorTextEntries 
             |> Array.find(fun x-> x.Language.Name="en")
 
         {
-            Name = name; 
+            Name = rawPokemonSpecies.Name; 
             Description = filterOutEscapeCharacters englishDescription.FlavorText; 
-            Habitat = pokemonSpecies.Habitat.Name; 
-            IsLegendary = pokemonSpecies.IsLegendary
+            Habitat = rawPokemonSpecies.Habitat.Name; 
+            IsLegendary = rawPokemonSpecies.IsLegendary
         }
     with
         | ex -> 
@@ -47,14 +40,13 @@ let private makePokemon (logger: ILogger) (pokemonSpecies: PokemonSpeciesProvide
     
 
 let private fecthPokemon logger name =
-    async {
-        let! pokemonDetails = fetchPokemonDetails name
+    let fetch name = async {
+        let! rawPokemonSpecies = PokemonSpeciesProvider.AsyncLoad(_pokemonSpeciesEndpoint +/ name)
 
-        let url = pokeBaseUrl +/ "pokemon-species" +/ pokemonDetails.Id
-        let! pokemonSpecies = PokemonSpeciesProvider.AsyncLoad(url)
-
-        return makePokemon logger pokemonSpecies pokemonDetails.Name 
+        return makePokemon logger rawPokemonSpecies
     }
+
+    getFromCacheOrFetch _pokemonCache fetch name 
 
 
 let private fetchTranslatedDescription (pokemon: Pokemon) translation = 
@@ -91,7 +83,9 @@ let private fetchTranslatedPokemon (logger: ILogger) name =
 
 
 let GetPokemonAsync logger name = 
-    startAsyncFunctionAsTask fecthPokemon logger name
+    let f() = fecthPokemon logger name
+    startAsyncFunctionAsTask f
 
 let GetTranslatedPokemonAsync logger name = 
-    startAsyncFunctionAsTask fetchTranslatedPokemon logger name
+    let f() = fetchTranslatedPokemon logger name
+    startAsyncFunctionAsTask f
