@@ -11,7 +11,7 @@ type Pokemon = {
     IsLegendary: bool
 }
 
-// Discriminated union to distinguish the traduction types
+/// Discriminated union to distinguish the traduction types
 type Translation = 
     | Yoda 
     | Shakespeare

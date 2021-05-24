@@ -6,7 +6,10 @@ open FsUnit.Xunit
 open FsCheck.Xunit
 
 open Core.Utilities
+open Core.JsonProviders
 open FsCheck
+open System.Collections.Generic
+
 
 module pathConcatanationOperator = 
     [<Fact>]
@@ -28,6 +31,7 @@ module pathConcatanationOperator =
     let ``Handles ints as rhs`` () =
         "lhs" +/ 123 |> should equal "lhs/123"
 
+
 module filterOutEscapeCharacters = 
     /// Property-based test using FsCheck: https://fscheck.github.io/FsCheck/
     /// The framework generates 100 "random" inputs, to validate if the property holds
@@ -44,7 +48,7 @@ module filterOutEscapeCharacters =
         filterOutEscapeCharacters String.Empty |> should equal String.Empty
 
     [<Fact>]
-    let ``Returrns emptry string if null`` () =
+    let ``Returns emptry string if input null`` () =
         filterOutEscapeCharacters null |> should equal String.Empty
 
     [<Fact>]
@@ -56,6 +60,45 @@ module filterOutEscapeCharacters =
         filterOutEscapeCharacters "some\fstring\fwith\ffeed" |> should equal "some string with feed"
 
 
+module makePokemon = 
+    [<Fact>]
+    let ``Builds a Pokemon object from a raw response of the pokeapi`` () =
+        let testSample = """
+        {
+        "name": "some name",
+        "flavor_text_entries": [
+          {
+            "flavor_text": "some description\nwithout\nescape\fchars",
+            "language": {
+              "name": "en"
+            }
+          }
+        ],
+        "habitat": {
+          "name": "some habitat"
+        },
+        "is_legendary": false
+        }"""
+        let rawPokemonSpecies = PokemonSpeciesProvider.Parse(testSample)
+        let log x = x |> ignore //dummy mock logger
+        let pokemon = makePokemon log rawPokemonSpecies
+
+        pokemon.Name |> should equal "some name"
+        pokemon.Description |> should equal "some description without escape chars"
+        pokemon.Habitat |> should equal "some habitat"
+        pokemon.IsLegendary |> should be False
+
+    [<Fact>]
+    let ``Throws an exception if something went wrong`` () =
+        //No english language name in the FlavorTextEntries
+        let testSample = """
+        {
+        "name": "some name"
+        }"""
+        let rawPokemonSpecies = PokemonSpeciesProvider.Parse(testSample)
+        let log x = x |> ignore //dummy mock logger
+        (fun() -> makePokemon log rawPokemonSpecies |> ignore) 
+        |> should throw typeof<KeyNotFoundException>
 
     
 

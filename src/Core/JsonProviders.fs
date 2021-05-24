@@ -1318,7 +1318,7 @@ let private pokemonSpeciesSample = """
 
 [<Literal>]
 // copy pasted from https://api.funtranslations.com/translate/yoda.json?text=Master%20Obiwan%20has%20lost%20a%20planet.
-let private translatedSample = """
+let private translationSample = """
 {
 "success": {
 "total": 1
@@ -1332,4 +1332,4 @@ let private translatedSample = """
 
 type PokemonSpeciesProvider = JsonProvider<pokemonSpeciesSample>
 
-type TranslatedProvider = JsonProvider<translatedSample>
+type TranslationProvider = JsonProvider<translationSample>

@@ -47,6 +47,7 @@ namespace AttrapezLesTousApp
                 var exception = exceptionHandlerPathFeature.Error;
                 var message = "Why don't you ask Professor Oak if this Pokemon really exists?!?";
 
+                //.Net 5 specific, an very useful!
                 await context.Response.WriteAsJsonAsync(new { error = exception.Message, message = message });
             }));
 

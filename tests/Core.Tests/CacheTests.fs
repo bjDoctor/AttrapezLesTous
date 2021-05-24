@@ -23,10 +23,10 @@ module getFromCacheOrFetch =
             }
 
         //Act
-        let output = getFromCacheOrFetch emptyCache fetch key.Get
+        let result = getFromCacheOrFetch emptyCache fetch key.Get
 
         //Assert
-        (output |> Async.RunSynchronously) |> should equal value
+        (result |> Async.RunSynchronously) |> should equal value
         fetchHasBeenCalled |> should be True
 
     [<Property>]
@@ -43,9 +43,9 @@ module getFromCacheOrFetch =
             }
 
         //Act
-        let output = getFromCacheOrFetch cache fetch key.Get
+        let result = getFromCacheOrFetch cache fetch key.Get
 
         //Assert
-        (output |> Async.RunSynchronously) |> should equal cachedalue
+        (result |> Async.RunSynchronously) |> should equal cachedalue
         fetchHasBeenCalled |> should be False
 

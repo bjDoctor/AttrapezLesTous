@@ -2,6 +2,7 @@
 /// Module publicly exposing async functions to be called by an external module (e.g. the PokemonController)
 /// The async functions are wrapped into a Task, to enable calls from C#
 /// Naming: We follow the Get<Something>Async convention, widely used in many C# code bases
+//////
 
 module Core.Resources
 
