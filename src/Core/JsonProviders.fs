@@ -1317,30 +1317,6 @@ let private pokemonSpeciesSample = """
 }"""
 
 [<Literal>]
-// copy pasted from https://pokeapi.co/api/v2/pokemon/mewtwo
-let private pokemonSample = """
-{
-"abilities": [],
-"base_experience": 306,
-"forms": [],
-"game_indices": [],
-"height": 20,
-"held_items": [],
-"id": 150,
-"is_default": true,
-"location_area_encounters": "https://pokeapi.co/api/v2/pokemon/150/encounters",
-"moves": [],
-"name": "mewtwo",
-"order": 230,
-"past_types": [],
-"species": {},
-"sprites": {},
-"stats": [],
-"types": [],
-"weight": 1220
-}"""
-
-[<Literal>]
 // copy pasted from https://api.funtranslations.com/translate/yoda.json?text=Master%20Obiwan%20has%20lost%20a%20planet.
 let private translatedSample = """
 {
@@ -1355,7 +1331,5 @@ let private translatedSample = """
 }"""
 
 type PokemonSpeciesProvider = JsonProvider<pokemonSpeciesSample>
-
-type PokemonProvider = JsonProvider<pokemonSample>
 
 type TranslatedProvider = JsonProvider<translatedSample>

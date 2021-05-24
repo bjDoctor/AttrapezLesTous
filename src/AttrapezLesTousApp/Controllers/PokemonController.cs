@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AttrapezLesTousApp.Controllers
@@ -25,7 +23,7 @@ namespace AttrapezLesTousApp.Controllers
 
             try
             {
-                return await Core.PokeAPI.GetPokemonAsync(_logger, name);
+                return await Core.Resources.GetPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {
@@ -41,7 +39,7 @@ namespace AttrapezLesTousApp.Controllers
 
             try
             {
-                return await Core.PokeAPI.GetTranslatedPokemonAsync(_logger, name);
+                return await Core.Resources.GetTranslatedPokemonAsync(_logger, name);
             }
             catch (Exception ex)
             {

@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AttrapezLesTousApp", "src\A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C435EDAC-B439-4D36-B90C-90AE2BC5D607}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Core", "src\PokeAPI\Core.fsproj", "{3B539570-EEA0-45DB-B015-545D7E4124E0}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Core", "src\Core\Core.fsproj", "{3B539570-EEA0-45DB-B015-545D7E4124E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{47AA9C7F-279B-4FA3-BE18-B23F6406C6D7}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Core.Tests", "tests\APIs.Tests\Core.Tests.fsproj", "{F272673E-83D2-4862-A3C8-0F46B015A498}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Core.Tests", "tests\Core.Tests\Core.Tests.fsproj", "{F272673E-83D2-4862-A3C8-0F46B015A498}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

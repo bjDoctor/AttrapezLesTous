@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="CacheTests.fs" />
     <Compile Include="UtilitiesTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
@@ -28,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PokeAPI\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core\Core.fsproj" />
   </ItemGroup>
 
 </Project>

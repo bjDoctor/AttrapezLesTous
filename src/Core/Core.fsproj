@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Cache.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Utilities.fs" />
     <Compile Include="JsonProviders.fs" />
-    <Compile Include="TranslatedAPI.fs" />
-    <Compile Include="PokeAPI.fs" />
+    <Compile Include="TranslationApi.fs" />
+    <Compile Include="PokeApi.fs" />
+    <Compile Include="Resources.fs" />
   </ItemGroup>
 
   <ItemGroup>
