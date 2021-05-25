@@ -22,7 +22,7 @@ This will also launch a console window where logs are available. A log file `Att
 
 From the solution directory, execute the command: `dotnet build`
 
-You my also run the unit tests with `dotnet test`
+You may also run the unit tests with `dotnet test`
 
 The app can be run with: `dotnet .\src\AttrapezLesTousApp\bin\Debug\net5.0\AttrapezLesTousApp.dll`. Then open a new browser and navigate to `https://localhost:5001/pokemon/mewtwo`
 
@@ -30,8 +30,8 @@ The app can be run with: `dotnet .\src\AttrapezLesTousApp\bin\Debug\net5.0\Attra
 
 From the solution directory, to build a docker image, execute the command: `docker build -t attrapez-les-tous -f .\Dockerfile .`
 
-The to create a container from that image and immediately start it, execute: `docker run -p 80:5000 attrapez-les-tous`
-(This binds the local port 80 to the port 500 inside the container, where the app is running)
+To create a container from that image and immediately start it, execute: `docker run -p 80:5000 attrapez-les-tous`
+(This binds the local port 80 to the port 5000 inside the container, where the app is running)
 
 To access the containerized app, open a new browser and navigate to `http://localhost/pokemon/mewtwo`
 
@@ -47,7 +47,7 @@ The `WriteAsJsonAsync` method in the custom exception handler (in `Startup.cs`) 
 ## Solution structure
 
 The solution is composed of two projects:
-  - A .Net 5.0 Web Api Application, created from a Visual Studio C# template
+  - A .Net 5.0 Web Api Application, created from a Visual Studio C# template, with only one controller.
   - A `Core` project which implements the logic of the app in F#. I choose this language because it provides a very concise syntax that allows us to build applications little block by little block (aka function). Also, the JsonProviders from the `FSharp.Data` library is a great and simple way to make web requests.
 
 
@@ -55,9 +55,9 @@ The solution is composed of two projects:
 
 ## Caching
 
-The caching mechanism is very basic, it is simply a concurrent dictionary, manually maintained. Moving forward, this would need to be improved, probably by implementing an `IMemoryCache`. 
+The caching mechanism is very basic, it is simply a concurrent dictionary, manually maintained. One issue is that we might have duplicated cached entries: when a Pokemon is queried by name or by Id. Both returned the same data, which will be stored twice in the cache. Moving forward, this would need to be improved, probably by implementing an `IMemoryCache`. 
 
-Also, using Dependency Injection for accessing the cache seems a good approach but how this fits an F# library (where things are supposed to be immutable and pure), would need to be carefully considered. 
+Also, using Dependency Injection for accessing the cache seems a good approach but how this fits with an F# library (where things are supposed to be immutable and pure), would need to be carefully considered. 
 
 ## Config 
 

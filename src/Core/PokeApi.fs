@@ -22,12 +22,13 @@ module internal PokeApi =
     // This is a very basic cache, with no expiry time: once a pokemon has been inserted it can no longer be modified.
     // That's fine since we do not expect the data to change
     let private _pokemonCache = ConcurrentDictionary<string, Pokemon>()
+    let private _translatedPokemonCache = ConcurrentDictionary<string, Pokemon>()
 
 
     /// Main function of this module: retrieves the pokemon details through a call to the poke api, and builds a pokemon object from the raw json response
     /// Note that this function also maintains a cache of Pokemons
     let fecthPokemon (logger: ILogger) name =
-        let fetch name = async {
+        let fetch() = async {
             let! rawPokemonSpecies = PokemonSpeciesProvider.AsyncLoad(_pokemonSpeciesEndpoint +/ name)
 
             return makePokemon logger.LogInformation rawPokemonSpecies
@@ -38,10 +39,12 @@ module internal PokeApi =
 
     /// Helper wrapper, deferring calls to the funtranslation api and updated the Pokemon's description
     let private fetchTranslatedDescription (pokemon: Pokemon) translation = 
-        async {
+        let fetch() = async {
             let! translatedDescription = TranslationApi.fetchTranslation pokemon.Description translation
             return {pokemon with Description = translatedDescription}
         }
+
+        Cache.getFromCacheOrFetch _translatedPokemonCache fetch pokemon.Name 
 
 
     /// Helper function allowing logging
@@ -57,8 +60,7 @@ module internal PokeApi =
 
 
     /// Retrieves a pokemon and translates its description
-    /// No cache of translated Pokemon is maintained because of the limitations of the funtranslation api, which allows only a hadful of requests per hour
-    /// We do not want to risk storing un-translated data
+    /// Also maintains a cache of translated pokemons
     let fetchTranslatedPokemon (logger: ILogger) name = 
         async {
             let! pokemon = fecthPokemon logger name 

@@ -15,7 +15,7 @@ open System.Collections.Concurrent
 let getFromCacheOrFetch (cache: ConcurrentDictionary<'a, 'b>) fetch key = 
     let fetchAndUpdateCache() = 
         async {
-            let! value = fetch key
+            let! value = fetch()
             cache.TryAdd(key, value) |> ignore
             return value
         }

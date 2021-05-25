@@ -16,7 +16,7 @@ module getFromCacheOrFetch =
         //Arrange
         let emptyCache = ConcurrentDictionary<string, string>()
         let mutable fetchHasBeenCalled = false
-        let fetch _ = 
+        let fetch() = 
             async {
                 fetchHasBeenCalled <- true
                 return value
@@ -36,7 +36,7 @@ module getFromCacheOrFetch =
         cache.TryAdd(key.Get, cachedalue) |> ignore
 
         let mutable fetchHasBeenCalled = false
-        let fetch _ = 
+        let fetch() = 
             async {
                 fetchHasBeenCalled <- true
                 return fetchedValue
